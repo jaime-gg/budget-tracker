@@ -4,11 +4,13 @@ const CACHE_NAME = APP_PREFIX + VERSION;
 
 const FILES_TO_CACHE = [
     '/',
+
     '/index.html',
+    //'/manifest.json', // add this later pls
     '/js/index.js',
-    '/js/idb.js',
-    '/manifest.json',
+    //'/js/idb.js', //add this later pls
     '/css/styles.css',
+
     '/icons/icon-72x72.png',
     '/icons/icon-96x96.png',
     '/icons/icon-128x128.png',
@@ -18,3 +20,4 @@ const FILES_TO_CACHE = [
     '/icons/icon-384x384.png',
     '/icons/icon-512x512.png'  
 ];
+
