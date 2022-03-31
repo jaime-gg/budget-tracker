@@ -31,9 +31,9 @@ request.onerror = function(event) {
 function saveRecord(record) {
     const transaction = db.transaction(['new_transaction'], 'readwrite');
   
-    const transactionObjectStore = transaction.objectStore('new_transaction');
+    const moneyObjectStore = transaction.objectStore('new_transaction');
   
-    transactionObjectStore.add(record);
+    moneyObjectStore.add(record);
 }
 
 
@@ -41,10 +41,10 @@ function saveRecord(record) {
 function uploadTransaction() {
     // OPEN A TRANSACTION ON YOUR PENDING DB
     const transaction = db.transaction(['new_transaction'], 'readwrite');
-    const transactionObjectStore = transaction.objectStore('new_transaction');
+    const moneyObjectStore = transaction.objectStore('new_transaction');
   
     // GET ALL RECORDS FROM STORE AND SET TO A VARIABLE
-    const getAll = transactionObjectStore.getAll();
+    const getAll = moneyObjectStore.getAll();
   
     getAll.onsuccess = function() {
         // IF THERE WAS DATA IN INDEXEDDB'S STORE, LET'S SEND IT TO THE API SERVER
@@ -66,10 +66,10 @@ function uploadTransaction() {
                 }
     
                 const transaction = db.transaction(['new_transaction'], 'readwrite');
-                const transactionObjectStore = transaction.objectStore('new_transaction');
+                const moneyObjectStore = transaction.objectStore('new_transaction');
 
                 // CLEAR ALL ITEMS IN YOUR STORE
-                transactionObjectStore.clear();
+                moneyObjectStore.clear();
             })
 
             .catch(err => {
