@@ -1,4 +1,4 @@
-const APP_PREFIX = 'budgetingTracker-';
+const APP_PREFIX = 'budgeting_tracker-';
 const VERSION = 'v_01';
 const CACHE_NAME = APP_PREFIX + VERSION;
 
@@ -6,7 +6,7 @@ const FILES_TO_CACHE = [
     '/',
 
     '/index.html',
-    //'/manifest.json', // add this later pls
+    '/manifest.json', // add this later pls
     '/js/index.js',
     //'/js/idb.js', //add this later pls
     '/css/styles.css',
