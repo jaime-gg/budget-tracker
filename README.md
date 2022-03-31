@@ -28,6 +28,6 @@ THEN the deposits or expenses added while they were offline are added to their t
 
 ## Links
 
-* Heroku Page: https://the-grand-budgeter.herokuapp.com/ 
+* Heroku Page: https://offroad-budgeter.herokuapp.com/
 
 * Github Repo: https://github.com/jaime-gg/budget-tracker 
