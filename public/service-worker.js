@@ -21,3 +21,33 @@ const FILES_TO_CACHE = [
     '/icons/icon-512x512.png'  
 ];
 
+
+// Install the service worker
+self.addEventListener('install', function(evt) {
+    evt.waitUntil(
+        caches.open(CACHE_NAME).then(cache => {
+            console.log('Installing Cache : ' + CACHE_NAME);
+            return cache.addAll(FILES_TO_CACHE)
+        })
+    );
+
+    self.skipWaiting();
+});
+
+// Activate the service worker and remove old data from the cache
+self.addEventListener('activate', function(evt) {
+    evt.waitUntil(
+      caches.keys().then(keyList => {
+        return Promise.all(
+          keyList.map(key => {
+            if (key !== CACHE_NAME && key !== DATA_CACHE_NAME) {
+              console.log('Deleting Cache : ' + keyList[i]);
+              return caches.delete(key);
+            }
+          })
+        );
+      })
+    );
+  
+    self.clients.claim();
+});
