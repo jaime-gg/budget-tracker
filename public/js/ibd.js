@@ -12,7 +12,6 @@ request.onupgradeneeded = function(event) {
 
 // WHEN SUCCESSFUL 
 request.onsuccess = function(event) {
-    // when db is successfully created with its object store (from onupgradedneeded event above), save reference to db in global variable
     db = event.target.result;
   
     // CHECK IF APP IS ONLINE
@@ -20,6 +19,23 @@ request.onsuccess = function(event) {
         uploadEntry();
     }
 };
+
+
+// LOG ERROR
+request.onerror = function(event) {
+    console.log(event.target.errorCode);
+};
+
+
+// ADD RECORD TO YOUR STORE WITH ADD METHOD.
+function saveRecord(record) {
+    const transaction = db.transaction(['new_entry'], 'readwrite');
+  
+    const entryObjectStore = transaction.objectStore('new_entry');
+  
+    entryObjectStore.add(record);
+}
+
 
 
 // LISTEN FOR APP COMING BACK ONLINE
