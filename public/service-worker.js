@@ -37,55 +37,37 @@ self.addEventListener('install', function(evt) {
 // ACTIVATE THE SERVICE WORKER | REMOVE OLD DATA FROM THE CACHE
 self.addEventListener('activate', function(evt) {
     evt.waitUntil(
-        caches.keys().then(keyList => {
-            return Promise.all(
-                keyList.map(key => {
-                    if (key !== CACHE_NAME && key !== DATA_CACHE_NAME) {
-                        console.log('Deleting Cache : ' + keyList[i]);
-                        return caches.delete(key);
-                    }
-                })
-            );
-        })
-    );
+      caches.keys().then(function(keyList) {
+        let cacheKeeplist = keyList.filter(function(key) {
+            return key.indexOf(APP_PREFIX);
+        });
+        cacheKeeplist.push(CACHE_NAME);
   
-    self.clients.claim();
+        return Promise.all(
+          keyList.map(function(key, i) {
+            if (cacheKeeplist.indexOf(key) === -1) {
+                console.log('deleting cache : ' + keyList[i]);
+                return caches.delete(keyList[i]);
+            }
+          })
+        );
+      })
+    );
 });
 
 // INTERCEPT FETCH REQUESTS
-self.addEventListener('fetch', function(evt) {
-    if (evt.request.url.includes('/api/')) {
-        evt.respondWith(
-            caches
-            .open(DATA_CACHE_NAME)
-            .then(cache => {
-                return fetch(evt.request)
-                .then(response => {
-                    if (response.status === 200) {
-                        cache.put(evt.request.url, response.clone());
-                    }
-
-                    return response;
-                    })
-                .catch(err => {
-                    return cache.match(evt.request);
-                });
-            })
-            .catch(err => console.log(err))
-        );
-  
-        return;
-    }
-  
+self.addEventListener('fetch', function (evt) {
+    console.log('fetch request : ' + evt.request.url)
     evt.respondWith(
-        fetch(evt.request).catch(function() {
-            return caches.match(evt.request).then(function(response) {
-                if (response) {
-                    return response;
-                } else if (evt.request.headers.get('accept').includes('text/html')) {
-                    return caches.match('/');
-                }
-            });
-        })
-    );
-  });
+      caches.match(evt.request).then(function (request) {
+        if (request) { // if cache is available, respond with cache
+          console.log('responding with cache : ' + evt.request.url)
+          return request
+        } else {       // if there are no cache, try fetching request
+          console.log('file is not cached, fetching : ' + evt.request.url)
+          return fetch(evt.request)
+        }
+  
+      })
+    )
+})
