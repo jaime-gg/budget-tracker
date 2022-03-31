@@ -6,9 +6,9 @@ const FILES_TO_CACHE = [
     '/',
 
     '/index.html',
-    '/manifest.json', // add this later pls
+    '/manifest.json', 
     '/js/index.js',
-    //'/js/idb.js', //add this later pls
+    '/js/idb.js', 
     '/css/styles.css',
 
     '/icons/icon-72x72.png',

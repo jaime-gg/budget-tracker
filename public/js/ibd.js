@@ -37,6 +37,47 @@ function saveRecord(record) {
 }
 
 
+// TRIGGERED WHEN BACK ONLINE 
+function uploadEntry() {
+    // OPEN A TRANSACTION ON YOUR PENDING DB
+    const transaction = db.transaction(['new_entry'], 'readwrite');
+    const entryObjectStore = transaction.objectStore('new_entry');
+  
+    // GET ALL RECORDS FROM STORE AND SET TO A VARIABLE
+    const getAll = entryObjectStore.getAll();
+  
+    getAll.onsuccess = function() {
+        // IF THERE WAS DATA IN INDEXEDDB'S STORE, LET'S SEND IT TO THE API SERVER
+        if (getAll.result.length > 0) {
+            fetch('/api/transaction', {
+            method: 'POST',
+            body: JSON.stringify(getAll.result),
+            headers: {
+                Accept: 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            }
+            })
+
+            .then(response => response.json())
+
+            .then(serverResponse => {
+                if (serverResponse.message) {
+                    throw new Error(serverResponse);
+                }
+    
+                const transaction = db.transaction(['new_entry'], 'readwrite');
+                const entryObjectStore = transaction.objectStore('new_entry');
+
+                // CLEAR ALL ITEMS IN YOUR STORE
+                entryObjectStore.clear();
+            })
+
+            .catch(err => {
+                console.log(err);
+            });
+        }
+    };
+}
 
 // LISTEN FOR APP COMING BACK ONLINE
 window.addEventListener('online', uploadEntry);
