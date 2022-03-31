@@ -6,7 +6,7 @@ const request = indexedDB.open('budgeting_tracker', 1);
 // UPDATE WHENEVER NEEDED 
 request.onupgradeneeded = function(event) {
     const db = event.target.result;
-    db.createObjectStore('new_entry', { autoIncrement: true });
+    db.createObjectStore('new_transaction', { autoIncrement: true });
 };
 
 
@@ -16,7 +16,7 @@ request.onsuccess = function(event) {
   
     // CHECK IF APP IS ONLINE
     if (navigator.onLine) {
-        uploadEntry();
+        uploadTransaction();
     }
 };
 
@@ -29,22 +29,22 @@ request.onerror = function(event) {
 
 // ADD RECORD TO YOUR STORE WITH ADD METHOD.
 function saveRecord(record) {
-    const transaction = db.transaction(['new_entry'], 'readwrite');
+    const transaction = db.transaction(['new_transaction'], 'readwrite');
   
-    const entryObjectStore = transaction.objectStore('new_entry');
+    const transactionObjectStore = transaction.objectStore('new_transaction');
   
-    entryObjectStore.add(record);
+    transactionObjectStore.add(record);
 }
 
 
 // TRIGGERED WHEN BACK ONLINE 
-function uploadEntry() {
+function uploadTransaction() {
     // OPEN A TRANSACTION ON YOUR PENDING DB
-    const transaction = db.transaction(['new_entry'], 'readwrite');
-    const entryObjectStore = transaction.objectStore('new_entry');
+    const transaction = db.transaction(['new_transaction'], 'readwrite');
+    const transactionObjectStore = transaction.objectStore('new_transaction');
   
     // GET ALL RECORDS FROM STORE AND SET TO A VARIABLE
-    const getAll = entryObjectStore.getAll();
+    const getAll = transactionObjectStore.getAll();
   
     getAll.onsuccess = function() {
         // IF THERE WAS DATA IN INDEXEDDB'S STORE, LET'S SEND IT TO THE API SERVER
@@ -65,11 +65,11 @@ function uploadEntry() {
                     throw new Error(serverResponse);
                 }
     
-                const transaction = db.transaction(['new_entry'], 'readwrite');
-                const entryObjectStore = transaction.objectStore('new_entry');
+                const transaction = db.transaction(['new_transaction'], 'readwrite');
+                const transactionObjectStore = transaction.objectStore('new_transaction');
 
                 // CLEAR ALL ITEMS IN YOUR STORE
-                entryObjectStore.clear();
+                transactionObjectStore.clear();
             })
 
             .catch(err => {
@@ -80,4 +80,4 @@ function uploadEntry() {
 }
 
 // LISTEN FOR APP COMING BACK ONLINE
-window.addEventListener('online', uploadEntry);
+window.addEventListener('online', uploadTransaction);
